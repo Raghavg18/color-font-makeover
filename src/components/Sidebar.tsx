@@ -15,24 +15,24 @@ const Sidebar = () => {
 
   return (
     <div 
-      className={`bg-dashboard-sidebar min-h-screen transition-all duration-300 ease-in-out flex flex-col ${
+      className={`bg-dashboard-sidebar min-h-screen transition-all duration-300 ease-in-out flex flex-col border-r border-gray-200 ${
         collapsed ? 'w-20' : 'w-64'
       }`}
     >
-      <div className="p-6 flex items-center justify-between border-b border-white/10">
-        <h1 className={`text-xl font-bold text-white ${collapsed ? 'hidden' : 'block'}`}>
+      <div className="p-6 flex items-center justify-between border-b border-gray-200">
+        <h1 className={`text-xl font-bold text-gray-800 ${collapsed ? 'hidden' : 'block'}`}>
           Dashboard
         </h1>
         <button 
           onClick={() => setCollapsed(!collapsed)}
-          className="text-white/60 hover:text-white transition-colors"
+          className="text-gray-500 hover:text-gray-800 transition-colors"
         >
           {collapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
         </button>
       </div>
       
       <div className="mt-6">
-        <div className={`${collapsed ? 'hidden' : 'block'} px-6 mb-4 text-xs font-semibold text-white/40 uppercase tracking-wider`}>
+        <div className={`${collapsed ? 'hidden' : 'block'} px-6 mb-4 text-xs font-semibold text-gray-500 uppercase tracking-wider`}>
           Main
         </div>
         <nav>
@@ -42,8 +42,8 @@ const Sidebar = () => {
               to={item.path}
               className={`flex items-center py-3 px-6 transition-colors ${
                 location.pathname === item.path
-                  ? 'text-white bg-white/10'
-                  : 'text-white/60 hover:text-white hover:bg-white/5'
+                  ? 'text-blue-600 bg-blue-50'
+                  : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
               }`}
             >
               <span className="mr-3">{item.icon}</span>
