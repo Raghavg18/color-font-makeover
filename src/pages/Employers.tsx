@@ -99,27 +99,27 @@ const Employers = () => {
       <Sidebar />
       <div className="flex-1 p-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white/90 mb-2 animate-fade-in">Employers</h1>
-          <p className="text-white/60 animate-slide-in">Browse and manage employers using your platform.</p>
+          <h1 className="text-3xl font-bold text-gray-800 mb-2 animate-fade-in">Employers</h1>
+          <p className="text-gray-500 animate-slide-in">Browse and manage employers using your platform.</p>
         </div>
         
         <div className="dashboard-card mb-8" style={{ '--animation-order': 0 } as React.CSSProperties}>
           <div className="flex flex-col md:flex-row gap-4 items-center">
             <div className="relative flex-1 w-full">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/40" size={18} />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
               <input 
                 type="text"
                 placeholder="Search employers by name, industry or location..." 
-                className="bg-white/5 border border-white/10 rounded-lg py-2 pl-10 pr-4 w-full text-white/80 focus:outline-none focus:ring-2 focus:ring-white/20"
+                className="bg-gray-50 border border-gray-200 rounded-lg py-2 pl-10 pr-4 w-full text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-100"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <button className="flex items-center gap-2 bg-white/5 hover:bg-white/10 transition-colors border border-white/10 rounded-lg py-2 px-4">
+            <button className="flex items-center gap-2 bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-200 rounded-lg py-2 px-4 text-gray-700">
               <Filter size={18} />
               <span>Filters</span>
             </button>
-            <button className="flex items-center gap-2 bg-white/5 hover:bg-white/10 transition-colors border border-white/10 rounded-lg py-2 px-4">
+            <button className="flex items-center gap-2 bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-200 rounded-lg py-2 px-4 text-gray-700">
               <ArrowUpDown size={18} />
               <span>Sort</span>
             </button>
@@ -129,9 +129,9 @@ const Employers = () => {
         {isLoading ? (
           <div className="dashboard-card flex items-center justify-center h-64" style={{ '--animation-order': 1 } as React.CSSProperties}>
             <div className="animate-pulse space-y-4">
-              <div className="h-12 w-48 bg-white/5 rounded"></div>
-              <div className="h-4 w-64 bg-white/5 rounded"></div>
-              <div className="h-4 w-56 bg-white/5 rounded"></div>
+              <div className="h-12 w-48 bg-gray-100 rounded"></div>
+              <div className="h-4 w-64 bg-gray-100 rounded"></div>
+              <div className="h-4 w-56 bg-gray-100 rounded"></div>
             </div>
           </div>
         ) : (
@@ -139,7 +139,7 @@ const Employers = () => {
             {filteredEmployers.map((employer, index) => (
               <div 
                 key={employer.id} 
-                className="dashboard-card hover:border hover:border-white/10 cursor-pointer" 
+                className="dashboard-card hover:border hover:border-gray-200 cursor-pointer" 
                 style={{ '--animation-order': index + 1 } as React.CSSProperties}
               >
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
@@ -149,35 +149,35 @@ const Employers = () => {
                     className="w-16 h-16 rounded-full object-cover" 
                   />
                   <div className="flex-1">
-                    <h3 className="text-xl font-semibold text-white">{employer.name}</h3>
-                    <div className="flex items-center text-white/60 mb-1">
+                    <h3 className="text-xl font-semibold text-gray-800">{employer.name}</h3>
+                    <div className="flex items-center text-gray-600 mb-1">
                       <Building size={16} className="mr-2" />
                       {employer.industry}
                     </div>
-                    <div className="flex items-center text-white/60 mb-2">
+                    <div className="flex items-center text-gray-600 mb-2">
                       <MapPin size={16} className="mr-2" />
                       {employer.location}
                     </div>
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 md:mt-0">
-                    <div className="flex flex-col items-center p-3 bg-white/5 rounded-lg">
-                      <div className="text-blue-400 font-medium">{employer.openJobs}</div>
-                      <div className="text-xs text-white/60">Open Jobs</div>
+                    <div className="flex flex-col items-center p-3 bg-gray-50 rounded-lg">
+                      <div className="text-blue-600 font-medium">{employer.openJobs}</div>
+                      <div className="text-xs text-gray-500">Open Jobs</div>
                     </div>
-                    <div className="flex flex-col items-center p-3 bg-white/5 rounded-lg">
-                      <div className="text-purple-400 font-medium">{employer.activeProjects}</div>
-                      <div className="text-xs text-white/60">Active Projects</div>
+                    <div className="flex flex-col items-center p-3 bg-gray-50 rounded-lg">
+                      <div className="text-purple-600 font-medium">{employer.activeProjects}</div>
+                      <div className="text-xs text-gray-500">Active Projects</div>
                     </div>
-                    <div className="flex flex-col items-center p-3 bg-white/5 rounded-lg">
-                      <div className="text-green-500 font-medium">{employer.totalSpent}</div>
-                      <div className="text-xs text-white/60">Total Spent</div>
+                    <div className="flex flex-col items-center p-3 bg-gray-50 rounded-lg">
+                      <div className="text-green-600 font-medium">{employer.totalSpent}</div>
+                      <div className="text-xs text-gray-500">Total Spent</div>
                     </div>
-                    <div className="flex flex-col items-center p-3 bg-white/5 rounded-lg">
-                      <div className="flex items-center text-white/80">
+                    <div className="flex flex-col items-center p-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-center text-gray-700">
                         <Briefcase size={14} className="mr-1" />
                         <span>{employer.joinedDate}</span>
                       </div>
-                      <div className="text-xs text-white/60">Member Since</div>
+                      <div className="text-xs text-gray-500">Member Since</div>
                     </div>
                   </div>
                 </div>

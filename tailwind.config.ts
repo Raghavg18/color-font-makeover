@@ -30,9 +30,9 @@ export default {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				dashboard: {
-					dark: '#12151F',
-					sidebar: '#151927',
-					card: '#1A1F2C'
+					dark: '#FFFFFF',
+					sidebar: '#F6F6F7',
+					card: '#FFFFFF'
 				},
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
