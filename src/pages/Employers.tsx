@@ -1,7 +1,9 @@
 
 import { useState, useEffect } from 'react';
-import { Search, Filter, ArrowUpDown, Building, MapPin, Briefcase } from 'lucide-react';
+import { Search, Building, MapPin, Briefcase } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
+import FilterDialog from '../components/FilterDialog';
+import SortMenu, { SortOption } from '../components/SortMenu';
 
 interface Employer {
   id: number;
@@ -13,6 +15,13 @@ interface Employer {
   activeProjects: number;
   totalSpent: string;
   joinedDate: string;
+}
+
+interface FilterOptions {
+  minRate: number | '';
+  maxRate: number | '';
+  minRating: number | '';
+  lastActive: string;
 }
 
 const mockEmployers: Employer[] = [
@@ -73,26 +82,102 @@ const mockEmployers: Employer[] = [
   }
 ];
 
+const extractNumberFromCurrency = (currency: string): number => {
+  return parseFloat(currency.replace(/[^0-9.]/g, ''));
+};
+
 const Employers = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [employers, setEmployers] = useState<Employer[]>([]);
+  const [allEmployers, setAllEmployers] = useState<Employer[]>([]);
+  const [displayedEmployers, setDisplayedEmployers] = useState<Employer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentSort, setCurrentSort] = useState<SortOption>('recent');
+  const [filters, setFilters] = useState<FilterOptions>({
+    minRate: '',
+    maxRate: '',
+    minRating: '',
+    lastActive: 'any'
+  });
   
   useEffect(() => {
     // Simulate loading
     const timer = setTimeout(() => {
-      setEmployers(mockEmployers);
+      setAllEmployers(mockEmployers);
       setIsLoading(false);
     }, 1000);
     
     return () => clearTimeout(timer);
   }, []);
   
-  const filteredEmployers = employers.filter(
-    (employer) => employer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                employer.industry.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                employer.location.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  useEffect(() => {
+    let filtered = [...allEmployers];
+    
+    // Apply search filter
+    if (searchTerm) {
+      filtered = filtered.filter(
+        (employer) => employer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                  employer.industry.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                  employer.location.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    
+    // Apply additional filters
+    if (filters.minRate !== '') {
+      filtered = filtered.filter(employer => {
+        const spent = extractNumberFromCurrency(employer.totalSpent);
+        return spent >= Number(filters.minRate);
+      });
+    }
+    
+    if (filters.maxRate !== '') {
+      filtered = filtered.filter(employer => {
+        const spent = extractNumberFromCurrency(employer.totalSpent);
+        return spent <= Number(filters.maxRate);
+      });
+    }
+    
+    // Apply sorting
+    switch (currentSort) {
+      case 'rating-desc':
+        filtered.sort((a, b) => b.openJobs - a.openJobs);
+        break;
+      case 'rating-asc':
+        filtered.sort((a, b) => a.openJobs - b.openJobs);
+        break;
+      case 'hourly-desc':
+        filtered.sort((a, b) => {
+          const spentA = extractNumberFromCurrency(a.totalSpent);
+          const spentB = extractNumberFromCurrency(b.totalSpent);
+          return spentB - spentA;
+        });
+        break;
+      case 'hourly-asc':
+        filtered.sort((a, b) => {
+          const spentA = extractNumberFromCurrency(a.totalSpent);
+          const spentB = extractNumberFromCurrency(b.totalSpent);
+          return spentA - spentB;
+        });
+        break;
+      case 'recent':
+        // For simplicity, we're just sorting by joinedDate (although it's a string format)
+        filtered.sort((a, b) => {
+          const dateA = new Date(a.joinedDate);
+          const dateB = new Date(b.joinedDate);
+          return dateB.getTime() - dateA.getTime();
+        });
+        break;
+    }
+    
+    setDisplayedEmployers(filtered);
+  }, [allEmployers, searchTerm, filters, currentSort]);
+  
+  const handleFilterApply = (newFilters: FilterOptions) => {
+    setFilters(newFilters);
+  };
+  
+  const handleSortChange = (sortOption: SortOption) => {
+    setCurrentSort(sortOption);
+  };
 
   return (
     <div className="flex min-h-screen bg-dashboard-dark">
@@ -115,14 +200,8 @@ const Employers = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <button className="flex items-center gap-2 bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-200 rounded-lg py-2 px-4 text-gray-700">
-              <Filter size={18} />
-              <span>Filters</span>
-            </button>
-            <button className="flex items-center gap-2 bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-200 rounded-lg py-2 px-4 text-gray-700">
-              <ArrowUpDown size={18} />
-              <span>Sort</span>
-            </button>
+            <FilterDialog onApplyFilters={handleFilterApply} />
+            <SortMenu onSortChange={handleSortChange} currentSort={currentSort} />
           </div>
         </div>
         
@@ -134,9 +213,17 @@ const Employers = () => {
               <div className="h-4 w-56 bg-gray-100 rounded"></div>
             </div>
           </div>
+        ) : displayedEmployers.length === 0 ? (
+          <div className="dashboard-card flex flex-col items-center justify-center h-64 text-center" style={{ '--animation-order': 1 } as React.CSSProperties}>
+            <div className="text-gray-400 mb-2">
+              <Search size={48} strokeWidth={1.5} />
+            </div>
+            <h3 className="text-xl font-medium text-gray-700">No employers found</h3>
+            <p className="text-gray-500 mt-2">Try adjusting your search or filters</p>
+          </div>
         ) : (
           <div className="space-y-6">
-            {filteredEmployers.map((employer, index) => (
+            {displayedEmployers.map((employer, index) => (
               <div 
                 key={employer.id} 
                 className="dashboard-card hover:border hover:border-gray-200 cursor-pointer" 

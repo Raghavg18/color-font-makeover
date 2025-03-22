@@ -18,10 +18,10 @@ interface SortMenuProps {
 
 const SortMenu = ({ onSortChange, currentSort }: SortMenuProps) => {
   const sortOptions = [
-    { value: 'rating-desc', label: 'Highest Rating' },
-    { value: 'rating-asc', label: 'Lowest Rating' },
-    { value: 'hourly-desc', label: 'Highest Hourly Rate' },
-    { value: 'hourly-asc', label: 'Lowest Hourly Rate' },
+    { value: 'rating-desc', label: 'Highest Rating/Jobs' },
+    { value: 'rating-asc', label: 'Lowest Rating/Jobs' },
+    { value: 'hourly-desc', label: 'Highest Rate/Spent' },
+    { value: 'hourly-asc', label: 'Lowest Rate/Spent' },
     { value: 'recent', label: 'Recently Active' },
   ] as const;
 

@@ -40,9 +40,8 @@ const FilterDialog = ({ onApplyFilters }: FilterDialogProps) => {
     }));
   };
 
-  const handleApplyFilters = (close: () => void) => {
+  const handleApplyFilters = () => {
     onApplyFilters(filters);
-    close();
   };
 
   return (
@@ -123,11 +122,7 @@ const FilterDialog = ({ onApplyFilters }: FilterDialogProps) => {
           </div>
         </div>
         <DrawerFooter>
-          <DrawerClose asChild>
-            {(props) => (
-              <Button onClick={() => handleApplyFilters(props.close)}>Apply Filters</Button>
-            )}
-          </DrawerClose>
+          <Button onClick={handleApplyFilters}>Apply Filters</Button>
           <DrawerClose asChild>
             <Button variant="outline">Cancel</Button>
           </DrawerClose>

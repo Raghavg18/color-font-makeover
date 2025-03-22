@@ -137,15 +137,15 @@ const Freelancers = () => {
     
     // Apply additional filters
     if (filters.minRate !== '') {
-      filtered = filtered.filter(freelancer => freelancer.hourlyRate >= filters.minRate);
+      filtered = filtered.filter(freelancer => freelancer.hourlyRate >= Number(filters.minRate));
     }
     
     if (filters.maxRate !== '') {
-      filtered = filtered.filter(freelancer => freelancer.hourlyRate <= filters.maxRate);
+      filtered = filtered.filter(freelancer => freelancer.hourlyRate <= Number(filters.maxRate));
     }
     
     if (filters.minRating !== '') {
-      filtered = filtered.filter(freelancer => freelancer.rating >= filters.minRating);
+      filtered = filtered.filter(freelancer => freelancer.rating >= Number(filters.minRating));
     }
     
     if (filters.lastActive !== 'any') {
