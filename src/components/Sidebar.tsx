@@ -18,7 +18,7 @@ const Sidebar = () => {
 
   return (
     <div 
-      className={`bg-dashboard-sidebar min-h-screen transition-all duration-300 ease-in-out flex flex-col border-r border-gray-200 ${
+      className={`bg-white min-h-screen transition-all duration-300 ease-in-out flex flex-col border-r border-gray-200 ${
         collapsed ? 'w-20' : 'w-64'
       }`}
     >
