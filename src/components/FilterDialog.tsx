@@ -1,4 +1,6 @@
 
+'use client';
+
 import { useState } from 'react';
 import { Drawer, DrawerContent, DrawerTrigger, DrawerClose, DrawerHeader, DrawerTitle, DrawerFooter } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
