@@ -1,7 +1,10 @@
 
 import { useState, useEffect } from 'react';
-import { Search, Filter, ArrowUpDown, Star, Clock, DollarSign } from 'lucide-react';
+import { Search } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
+import FilterDialog from '../components/FilterDialog';
+import SortMenu, { SortOption } from '../components/SortMenu';
+import { Star, Clock, DollarSign } from 'lucide-react';
 
 interface Freelancer {
   id: number;
@@ -12,6 +15,13 @@ interface Freelancer {
   hourlyRate: number;
   projectsCompleted: number;
   location: string;
+  lastActive: string;
+}
+
+interface FilterOptions {
+  minRate: number | '';
+  maxRate: number | '';
+  minRating: number | '';
   lastActive: string;
 }
 
@@ -73,25 +83,113 @@ const mockFreelancers: Freelancer[] = [
   }
 ];
 
+const isWithinTimeframe = (lastActive: string, timeframe: string): boolean => {
+  if (timeframe === 'any') return true;
+  
+  if (lastActive === 'Just now') return true;
+  
+  if (timeframe === 'day') {
+    return lastActive.includes('hour') || lastActive === 'Just now';
+  }
+  
+  if (timeframe === 'week') {
+    return lastActive.includes('hour') || 
+           lastActive.includes('day') && parseInt(lastActive) <= 7 || 
+           lastActive === 'Just now';
+  }
+  
+  return true;
+};
+
 const Freelancers = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [freelancers, setFreelancers] = useState<Freelancer[]>([]);
+  const [allFreelancers, setAllFreelancers] = useState<Freelancer[]>([]);
+  const [displayedFreelancers, setDisplayedFreelancers] = useState<Freelancer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentSort, setCurrentSort] = useState<SortOption>('rating-desc');
+  const [filters, setFilters] = useState<FilterOptions>({
+    minRate: '',
+    maxRate: '',
+    minRating: '',
+    lastActive: 'any'
+  });
   
   useEffect(() => {
     // Simulate loading
     const timer = setTimeout(() => {
-      setFreelancers(mockFreelancers);
+      setAllFreelancers(mockFreelancers);
       setIsLoading(false);
     }, 1000);
     
     return () => clearTimeout(timer);
   }, []);
   
-  const filteredFreelancers = freelancers.filter(
-    (freelancer) => freelancer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                  freelancer.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  useEffect(() => {
+    let filtered = [...allFreelancers];
+    
+    // Apply search filter
+    if (searchTerm) {
+      filtered = filtered.filter(
+        (freelancer) => freelancer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                      freelancer.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+    }
+    
+    // Apply additional filters
+    if (filters.minRate !== '') {
+      filtered = filtered.filter(freelancer => freelancer.hourlyRate >= filters.minRate);
+    }
+    
+    if (filters.maxRate !== '') {
+      filtered = filtered.filter(freelancer => freelancer.hourlyRate <= filters.maxRate);
+    }
+    
+    if (filters.minRating !== '') {
+      filtered = filtered.filter(freelancer => freelancer.rating >= filters.minRating);
+    }
+    
+    if (filters.lastActive !== 'any') {
+      filtered = filtered.filter(freelancer => 
+        isWithinTimeframe(freelancer.lastActive, filters.lastActive)
+      );
+    }
+    
+    // Apply sorting
+    switch (currentSort) {
+      case 'rating-desc':
+        filtered.sort((a, b) => b.rating - a.rating);
+        break;
+      case 'rating-asc':
+        filtered.sort((a, b) => a.rating - b.rating);
+        break;
+      case 'hourly-desc':
+        filtered.sort((a, b) => b.hourlyRate - a.hourlyRate);
+        break;
+      case 'hourly-asc':
+        filtered.sort((a, b) => a.hourlyRate - b.hourlyRate);
+        break;
+      case 'recent':
+        // This is a simple approximation since we'd need actual timestamps
+        filtered.sort((a, b) => {
+          if (a.lastActive === 'Just now') return -1;
+          if (b.lastActive === 'Just now') return 1;
+          if (a.lastActive.includes('hour') && b.lastActive.includes('day')) return -1;
+          if (b.lastActive.includes('hour') && a.lastActive.includes('day')) return 1;
+          return 0;
+        });
+        break;
+    }
+    
+    setDisplayedFreelancers(filtered);
+  }, [allFreelancers, searchTerm, filters, currentSort]);
+  
+  const handleFilterApply = (newFilters: FilterOptions) => {
+    setFilters(newFilters);
+  };
+  
+  const handleSortChange = (sortOption: SortOption) => {
+    setCurrentSort(sortOption);
+  };
 
   return (
     <div className="flex min-h-screen bg-dashboard-dark">
@@ -114,14 +212,8 @@ const Freelancers = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <button className="flex items-center gap-2 bg-white hover:bg-gray-50 transition-colors border border-gray-200 rounded-lg py-2 px-4 text-gray-700">
-              <Filter size={18} />
-              <span>Filters</span>
-            </button>
-            <button className="flex items-center gap-2 bg-white hover:bg-gray-50 transition-colors border border-gray-200 rounded-lg py-2 px-4 text-gray-700">
-              <ArrowUpDown size={18} />
-              <span>Sort</span>
-            </button>
+            <FilterDialog onApplyFilters={handleFilterApply} />
+            <SortMenu onSortChange={handleSortChange} currentSort={currentSort} />
           </div>
         </div>
         
@@ -133,9 +225,17 @@ const Freelancers = () => {
               <div className="h-4 w-56 bg-gray-200 rounded"></div>
             </div>
           </div>
+        ) : displayedFreelancers.length === 0 ? (
+          <div className="dashboard-card flex flex-col items-center justify-center h-64 text-center" style={{ '--animation-order': 1 } as React.CSSProperties}>
+            <div className="text-gray-400 mb-2">
+              <Search size={48} strokeWidth={1.5} />
+            </div>
+            <h3 className="text-xl font-medium text-gray-700">No freelancers found</h3>
+            <p className="text-gray-500 mt-2">Try adjusting your search or filters</p>
+          </div>
         ) : (
           <div className="space-y-6">
-            {filteredFreelancers.map((freelancer, index) => (
+            {displayedFreelancers.map((freelancer, index) => (
               <div 
                 key={freelancer.id} 
                 className="dashboard-card hover:border hover:border-gray-200 cursor-pointer" 
