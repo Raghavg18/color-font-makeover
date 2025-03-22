@@ -1,36 +1,30 @@
 
 'use client';
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { SalesChart } from "@/components/SalesChart";
-import { StatCard } from "@/components/StatCard";
-import Link from "next/link";
+import { Card, CardContent } from "@/components/ui/card";
+import SalesChart from "@/components/SalesChart";
+import StatCard from "@/components/StatCard";
 
 export default function HomePage() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <Button>
-          <Link href="/freelancers">View Freelancers</Link>
-        </Button>
+        <h1 className="text-3xl font-bold">Dashboard Overview</h1>
       </div>
-
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <StatCard title="Total Revenue" value="$45,231.89" trend="up" percentage="34.7%" />
-        <StatCard title="Active Freelancers" value="2,431" trend="up" percentage="12.2%" />
-        <StatCard title="New Employers" value="456" trend="down" percentage="9.1%" />
-        <StatCard title="Completed Jobs" value="12,436" trend="up" percentage="18.5%" />
+      
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <StatCard title="Total Freelancers" value="1,234" trend="up" percentage="12" />
+        <StatCard title="Active Projects" value="89" trend="up" percentage="7" />
+        <StatCard title="Completed Projects" value="642" trend="down" percentage="2" />
+        <StatCard title="Total Revenue" value="$12,345" trend="up" percentage="23" />
       </div>
-
+      
       <Card>
-        <CardHeader>
-          <CardTitle>Revenue Overview</CardTitle>
-          <CardDescription>Monthly revenue for the current year</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <SalesChart />
+        <CardContent className="p-6">
+          <h2 className="text-xl font-semibold mb-4">Monthly Revenue</h2>
+          <div className="h-80">
+            <SalesChart />
+          </div>
         </CardContent>
       </Card>
     </div>
