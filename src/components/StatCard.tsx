@@ -6,9 +6,7 @@ import { ArrowDown, ArrowUp } from 'lucide-react';
 interface StatCardProps {
   title: string;
   value: string | number;
-  icon?: ReactNode;
-  trend?: 'up' | 'down';
-  percentage?: string;
+  icon: ReactNode;
   change?: number;
   animationOrder?: number;
   className?: string;
@@ -18,13 +16,11 @@ const StatCard = ({
   title, 
   value, 
   icon, 
-  trend,
-  percentage,
   change = 0, 
   animationOrder = 0,
   className 
 }: StatCardProps) => {
-  const isPositive = trend === 'up' || change >= 0;
+  const isPositive = change >= 0;
   
   return (
     <div 
@@ -36,10 +32,10 @@ const StatCard = ({
         <div className="text-white/80">{icon}</div>
       </div>
       <div className="stat-value">{value}</div>
-      {(trend || change !== 0) && (
+      {change !== 0 && (
         <div className={`mt-2 ${isPositive ? 'stat-indicator-up' : 'stat-indicator-down'}`}>
           {isPositive ? <ArrowUp size={16} className="mr-1" /> : <ArrowDown size={16} className="mr-1" />}
-          {percentage || Math.abs(change)}%
+          {Math.abs(change)}%
         </div>
       )}
     </div>

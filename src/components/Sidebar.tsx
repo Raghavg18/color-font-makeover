@@ -1,13 +1,10 @@
 
-'use client';
-
 import { useState } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Users, Briefcase, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const Sidebar = () => {
-  const pathname = usePathname();
+  const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
 
   const navItems = [
@@ -18,7 +15,7 @@ const Sidebar = () => {
 
   return (
     <div 
-      className={`bg-white min-h-screen transition-all duration-300 ease-in-out flex flex-col border-r border-gray-200 ${
+      className={`bg-dashboard-sidebar min-h-screen transition-all duration-300 ease-in-out flex flex-col border-r border-gray-200 ${
         collapsed ? 'w-20' : 'w-64'
       }`}
     >
@@ -42,9 +39,9 @@ const Sidebar = () => {
           {navItems.map((item) => (
             <Link
               key={item.path}
-              href={item.path}
+              to={item.path}
               className={`flex items-center py-3 px-6 transition-colors ${
-                pathname === item.path
+                location.pathname === item.path
                   ? 'text-blue-600 bg-blue-50'
                   : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
               }`}
