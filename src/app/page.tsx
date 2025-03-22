@@ -4,6 +4,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import SalesChart from "@/components/SalesChart";
 import StatCard from "@/components/StatCard";
+import CirclePieReview from "@/components/CirclePieReview";
 import { BarChart4, Users, Briefcase, DollarSign } from 'lucide-react';
 
 export default function HomePage() {
@@ -28,6 +29,22 @@ export default function HomePage() {
           </div>
         </CardContent>
       </Card>
+      
+      {/* Review Section */}
+      <div className="grid gap-6 md:grid-cols-2">
+        <CirclePieReview 
+          title="User Satisfaction" 
+          rating={4.7} 
+          count={243} 
+          color="#8B5CF6" 
+        />
+        <CirclePieReview 
+          title="Freelancer Rating" 
+          rating={4.2} 
+          count={189} 
+          color="#0EA5E9" 
+        />
+      </div>
     </div>
   );
 }
